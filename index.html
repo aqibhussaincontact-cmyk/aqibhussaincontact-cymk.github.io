@@ -1665,7 +1665,7 @@
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // ─── FORM STATE ───
   let currentStep = 1;
   const totalSteps = 5;
@@ -1775,19 +1775,25 @@
   }
 
   // ─── COOKIES ───
+  function safeStorage(action, key, value) {
+    try {
+      if (action === 'set') localStorage.setItem(key, value);
+      if (action === 'get') return localStorage.getItem(key);
+    } catch(e) { return null; }
+  }
+
   function acceptCookies() {
-    localStorage.setItem('ec_cookies', 'accepted');
+    safeStorage('set', 'ec_cookies', 'accepted');
     document.getElementById('cookie-banner').classList.add('hidden');
-    // TODO: Load GA4 and Meta Pixel here once accepted
   }
 
   function declineCookies() {
-    localStorage.setItem('ec_cookies', 'declined');
+    safeStorage('set', 'ec_cookies', 'declined');
     document.getElementById('cookie-banner').classList.add('hidden');
   }
 
   window.addEventListener('load', () => {
-    if (localStorage.getItem('ec_cookies')) {
+    if (safeStorage('get', 'ec_cookies')) {
       document.getElementById('cookie-banner').classList.add('hidden');
     }
   });
