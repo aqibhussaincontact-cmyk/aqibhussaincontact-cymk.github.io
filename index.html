@@ -1237,7 +1237,7 @@
     <p class="section-sub">Takes under 3 minutes. No obligation. No spam. Just a clear picture of what's available to your home.</p>
 
     <div class="form-wrapper">
-      <div class="form-header">
+      <div class="form-header" id="form-header">
         <div class="form-header-text">
           <h3>Your Home Energy Assessment</h3>
           <p id="form-progress-text">Step 1 of 5 — Property Details</p>
@@ -1283,6 +1283,7 @@
               <span class="option-label">Flat / Apartment</span>
             </div>
           </div>
+          <div class="form-error" id="err-1" style="display:none;color:#c0392b;font-size:0.85rem;margin-bottom:12px;">⚠ Please select your property type to continue.</div>
           <div class="form-nav">
             <div></div>
             <button class="btn-next" onclick="nextStep(1)">Continue →</button>
@@ -1300,15 +1301,20 @@
               <span class="option-icon">🔑</span>
               <span class="option-label">Yes, I own this property</span>
             </div>
-            <div class="option-card" onclick="selectOption(this, 'ownership'); checkTenant(this)">
+            <div class="option-card" onclick="selectOption(this, 'ownership'); showTenantWarning(this)">
               <span class="option-icon">📋</span>
               <span class="option-label">No, I rent this property</span>
             </div>
           </div>
 
+          <!-- Tenant soft warning — stays inline, doesn't lock them out -->
+          <div id="tenant-warning" style="display:none;background:#fff8ec;border:1px solid #f0c060;border-radius:10px;padding:14px 18px;margin:12px 0;font-size:0.875rem;color:#7a5a00;">
+            ⚠ <strong>Heads up:</strong> Most of our energy upgrade services are designed for homeowners. You can still continue and we'll let you know what options are available to you — or you can go back and correct this if you selected by mistake.
+          </div>
+
           <div class="inputs-row" style="margin-top:8px;">
             <div class="input-group">
-              <label>How many bedrooms?</label>
+              <label>How many bedrooms? *</label>
               <select id="bedrooms">
                 <option value="">Select...</option>
                 <option>1 bedroom</option>
@@ -1319,7 +1325,7 @@
               </select>
             </div>
             <div class="input-group">
-              <label>How many people live there?</label>
+              <label>How many people live there? *</label>
               <select id="occupants">
                 <option value="">Select...</option>
                 <option>1 person</option>
@@ -1333,7 +1339,7 @@
 
           <div class="inputs-row">
             <div class="input-group">
-              <label>Approximate annual energy bill?</label>
+              <label>Approximate annual energy bill? *</label>
               <select id="energy-bill">
                 <option value="">Select...</option>
                 <option>Under £1,000</option>
@@ -1344,11 +1350,12 @@
               </select>
             </div>
             <div class="input-group">
-              <label>Your postcode</label>
+              <label>Your postcode *</label>
               <input type="text" id="postcode" placeholder="e.g. SW1A 1AA" maxlength="8">
             </div>
           </div>
 
+          <div class="form-error" id="err-2" style="display:none;color:#c0392b;font-size:0.85rem;margin-bottom:12px;">⚠ Please complete all required fields before continuing.</div>
           <div class="form-nav">
             <button class="btn-back" onclick="prevStep(2)">← Back</button>
             <button class="btn-next" onclick="nextStep(2)">Continue →</button>
@@ -1374,6 +1381,10 @@
               <span class="option-label">Electric Boiler</span>
             </div>
             <div class="option-card" onclick="toggleMulti(this)">
+              <span class="option-icon">🔥</span>
+              <span class="option-label">Gas Boiler</span>
+            </div>
+            <div class="option-card" onclick="toggleMulti(this)">
               <span class="option-icon">🏠</span>
               <span class="option-label">Insulation</span>
             </div>
@@ -1387,7 +1398,7 @@
             </div>
           </div>
 
-          <p style="font-size:0.85rem;font-weight:600;color:var(--text-mid);margin-bottom:10px;margin-top:8px;">What's your approximate budget for home upgrades?</p>
+          <p style="font-size:0.85rem;font-weight:600;color:var(--text-mid);margin-bottom:10px;margin-top:20px;">What's your approximate budget for energy upgrades? *</p>
           <div class="options-grid" id="budget">
             <div class="option-card" onclick="selectOption(this, 'budget')">
               <span class="option-icon">💷</span>
@@ -1407,8 +1418,8 @@
             </div>
           </div>
 
-          <div class="input-group" style="margin-top:8px;">
-            <label>When are you looking to have work completed?</label>
+          <div class="input-group" style="margin-top:16px;">
+            <label>When are you looking to have work completed? *</label>
             <select id="timeline">
               <option value="">Select...</option>
               <option>As soon as possible</option>
@@ -1418,6 +1429,7 @@
             </select>
           </div>
 
+          <div class="form-error" id="err-3" style="display:none;color:#c0392b;font-size:0.85rem;margin-bottom:12px;">⚠ Please select at least one product, a budget, and a timeline to continue.</div>
           <div class="form-nav">
             <button class="btn-back" onclick="prevStep(3)">← Back</button>
             <button class="btn-next" onclick="nextStep(3)">Continue →</button>
@@ -1460,6 +1472,7 @@
             </select>
           </div>
 
+          <div class="form-error" id="err-4" style="display:none;color:#c0392b;font-size:0.85rem;margin-bottom:12px;">⚠ Please fill in your name, a valid email address, and a phone number.</div>
           <div class="form-nav">
             <button class="btn-back" onclick="prevStep(4)">← Back</button>
             <button class="btn-next" onclick="nextStep(4)">Continue →</button>
@@ -1473,7 +1486,7 @@
 
           <div class="consent-box">
             <input type="checkbox" id="consent-1">
-            <p class="consent-text">I consent to Energy Concierge collecting and processing my personal data as described in the <a href="#privacy">Privacy Policy</a>. I understand my details may be shared with up to 3 vetted, MCS-certified regional installation partners who may contact me by phone or email with quotes and information relevant to my enquiry.</p>
+            <p class="consent-text">I consent to Energy Concierge collecting and processing my personal data as described in the <a href="#privacy">Privacy Policy</a>. I understand my details may be shared with up to 3 vetted regional installation partners who may contact me by phone or email with quotes and information relevant to my enquiry.</p>
           </div>
 
           <div class="consent-box">
@@ -1486,9 +1499,10 @@
             <p class="consent-text">I confirm I am the homeowner (or have authority to make decisions about energy upgrades) at the property I have described. I am 18 or over.</p>
           </div>
 
+          <div class="form-error" id="err-5" style="display:none;color:#c0392b;font-size:0.85rem;margin-bottom:12px;">⚠ Please accept the required consent boxes to submit.</div>
           <div class="form-nav">
             <button class="btn-back" onclick="prevStep(5)">← Back</button>
-            <button class="btn-next btn-primary" onclick="submitForm()" style="background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--forest);">
+            <button class="btn-next btn-primary" onclick="submitEnergyForm()" style="background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--forest);">
               ✦ Submit My Assessment
             </button>
           </div>
@@ -1496,20 +1510,132 @@
 
       </div><!-- /form-body -->
 
-      <!-- SUCCESS STATE -->
-      <div class="form-success" id="form-success">
+      <!-- SUCCESS STATE — with construction upsell -->
+      <div class="form-success" id="form-success" style="display:none;">
         <div class="success-icon">✓</div>
         <h3 class="success-title">Assessment Received!</h3>
-        <p class="success-sub">Thank you — your free home energy assessment is underway. We're matching your details with vetted local installers right now. Expect to hear from them within 24–48 hours.<br><br>In the meantime, why not check if you could also save on your energy tariff?</p>
-        <a href="#switch" class="btn-primary">See If You Can Save On Your Bills Too →</a>
+        <p class="success-sub">Your home energy assessment is underway. We're matching your details with vetted local installers right now. Expect to hear from them within 24–48 hours.</p>
+
+        <!-- Construction upsell prompt -->
+        <div style="background:var(--cream);border:1px solid var(--mist);border-radius:16px;padding:32px;margin:32px 0;text-align:left;">
+          <p style="font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--moss);margin-bottom:10px;">One more thing</p>
+          <h4 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text-dark);margin-bottom:10px;">While we have you — are you also considering any home improvements?</h4>
+          <p style="color:var(--text-light);font-size:0.9rem;line-height:1.6;margin-bottom:24px;">We work with vetted construction specialists too. If you're thinking about a loft conversion, kitchen refurb, or anything else, we can get you matched with quotes at the same time — completely free.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+            <button class="btn-primary" onclick="showConstructionForm()" style="font-size:0.9rem;padding:13px 28px;">Yes, show me construction options →</button>
+            <a href="#switch" style="display:inline-flex;align-items:center;padding:13px 24px;border-radius:50px;border:2px solid var(--mist);color:var(--text-mid);font-size:0.9rem;font-weight:600;text-decoration:none;">No thanks, I'm done</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSTRUCTION FORM -->
+      <div id="construction-form" style="display:none;padding:48px;">
+        <h3 class="form-step-title" style="margin-bottom:8px;">Home Improvement Assessment</h3>
+        <p class="form-step-sub" style="margin-bottom:28px;">Tell us what you're considering and we'll match you with vetted specialists.</p>
+
+        <p style="font-size:0.85rem;font-weight:600;color:var(--text-mid);margin-bottom:12px;">Which home improvements are you interested in? (Select all that apply)</p>
+        <div class="options-grid" id="construction-interest">
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">🏗️</span>
+            <span class="option-label">Loft Conversion</span>
+          </div>
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">📐</span>
+            <span class="option-label">Loft Extension</span>
+          </div>
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">🍳</span>
+            <span class="option-label">Kitchen Refurbishment</span>
+          </div>
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">🛁</span>
+            <span class="option-label">Bathroom Remodelling</span>
+          </div>
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">🏠</span>
+            <span class="option-label">Whole House Refurbishment</span>
+          </div>
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">🪟</span>
+            <span class="option-label">Windows & Doors</span>
+          </div>
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">🌿</span>
+            <span class="option-label">Garden / Landscaping</span>
+          </div>
+          <div class="option-card" onclick="toggleMulti(this)">
+            <span class="option-icon">🔧</span>
+            <span class="option-label">General Renovation</span>
+          </div>
+        </div>
+
+        <p style="font-size:0.85rem;font-weight:600;color:var(--text-mid);margin-bottom:12px;margin-top:24px;">What's your approximate budget for these works? *</p>
+        <div class="options-grid" id="construction-budget">
+          <div class="option-card" onclick="selectOption(this, 'construction-budget')">
+            <span class="option-icon">💷</span>
+            <span class="option-label">Under £5k</span>
+          </div>
+          <div class="option-card" onclick="selectOption(this, 'construction-budget')">
+            <span class="option-icon">💷</span>
+            <span class="option-label">£5k – £15k</span>
+          </div>
+          <div class="option-card" onclick="selectOption(this, 'construction-budget')">
+            <span class="option-icon">💷</span>
+            <span class="option-label">£15k – £40k</span>
+          </div>
+          <div class="option-card" onclick="selectOption(this, 'construction-budget')">
+            <span class="option-icon">💷</span>
+            <span class="option-label">£40k – £80k</span>
+          </div>
+          <div class="option-card" onclick="selectOption(this, 'construction-budget')">
+            <span class="option-icon">💷</span>
+            <span class="option-label">£80k+</span>
+          </div>
+        </div>
+
+        <div class="input-group" style="margin-top:16px;">
+          <label>When are you hoping to start? *</label>
+          <select id="construction-timeline">
+            <option value="">Select...</option>
+            <option>Within 1 month</option>
+            <option>Within 3 months</option>
+            <option>Within 6 months</option>
+            <option>Within 12 months</option>
+            <option>Just planning ahead</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Any additional details? (Optional)</label>
+          <textarea id="construction-notes" rows="3" placeholder="e.g. We want to convert our loft into a bedroom with an en-suite..." style="width:100%;padding:14px 18px;border:2px solid rgba(0,0,0,0.09);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.95rem;color:var(--text-dark);resize:vertical;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--forest)'" onblur="this.style.borderColor='rgba(0,0,0,0.09)'"></textarea>
+        </div>
+
+        <div class="form-error" id="err-construction" style="display:none;color:#c0392b;font-size:0.85rem;margin-bottom:12px;">⚠ Please select at least one service, a budget, and a timeline.</div>
+        <div class="form-nav" style="margin-top:8px;">
+          <button class="btn-back" onclick="hideConstructionForm()">← Back</button>
+          <button class="btn-next btn-primary" onclick="submitConstructionForm()" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--forest);">
+            ✦ Submit Construction Enquiry
+          </button>
+        </div>
+      </div>
+
+      <!-- FULL SUCCESS STATE (both forms done) -->
+      <div id="full-success" style="display:none;text-align:center;padding:80px 48px;">
+        <div class="success-icon">🏆</div>
+        <h3 class="success-title">You're all set!</h3>
+        <p class="success-sub">We've received both your energy and home improvement assessments. Our team will be in touch within 24 hours with matched specialists for everything you need.<br><br>In the meantime, check if you can save on your energy tariff right now.</p>
+        <a href="#switch" class="btn-primary">Compare My Energy Tariff →</a>
       </div>
 
       <!-- DISQUALIFY STATE -->
-      <div class="form-disqualify" id="form-disqualify">
+      <div class="form-disqualify" id="form-disqualify" style="display:none;">
         <span class="disq-icon">🏠</span>
         <h3 class="disq-title">Our service is for homeowners</h3>
-        <p class="disq-sub">Unfortunately, most of the installer quotes and assessments we arrange require you to be the property owner. However, you may still be able to save money by switching your energy tariff right now — no ownership required.</p>
-        <a href="#switch" class="btn-primary">Find a Cheaper Energy Tariff →</a>
+        <p class="disq-sub">Unfortunately, most of our installer services are designed for property owners. However, you may still be able to save money by switching your energy tariff right now — no ownership required.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+          <a href="#switch" class="btn-primary">Find a Cheaper Energy Tariff →</a>
+          <button class="btn-back" onclick="resetTenantState()" style="margin:0;">← Go Back</button>
+        </div>
       </div>
 
     </div><!-- /form-wrapper -->
@@ -1670,7 +1796,7 @@
   let currentStep = 1;
   const totalSteps = 5;
   const progressLabels = [
-    '', // 0 unused
+    '',
     'Step 1 of 5 — Property Type',
     'Step 2 of 5 — Home Details',
     'Step 3 of 5 — Your Interests',
@@ -1679,9 +1805,11 @@
   ];
 
   function updateProgress(step) {
-    document.getElementById('form-progress-text').textContent = progressLabels[step];
-    for (let i = 1; i <= totalSteps; i++) {
-      const dot = document.getElementById('dot-' + i);
+    var el = document.getElementById('form-progress-text');
+    if (el) el.textContent = progressLabels[step];
+    for (var i = 1; i <= totalSteps; i++) {
+      var dot = document.getElementById('dot-' + i);
+      if (!dot) continue;
       dot.className = 'progress-dot';
       if (i < step) dot.classList.add('done');
       if (i === step) dot.classList.add('active');
@@ -1689,14 +1817,60 @@
   }
 
   function showStep(step) {
-    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
-    const el = document.getElementById('step-' + step);
+    document.querySelectorAll('.form-step').forEach(function(s) { s.classList.remove('active'); });
+    var el = document.getElementById('step-' + step);
     if (el) el.classList.add('active');
     updateProgress(step);
     currentStep = step;
+    // hide all errors when switching steps
+    document.querySelectorAll('.form-error').forEach(function(e) { e.style.display = 'none'; });
+  }
+
+  // ─── VALIDATION ───
+  function validateStep(step) {
+    if (step === 1) {
+      if (!getSelected('prop-type')) {
+        document.getElementById('err-1').style.display = 'block';
+        return false;
+      }
+    }
+    if (step === 2) {
+      var ownership = getSelected('ownership');
+      var bedrooms = document.getElementById('bedrooms').value;
+      var occupants = document.getElementById('occupants').value;
+      var bill = document.getElementById('energy-bill').value;
+      var postcode = document.getElementById('postcode').value.trim();
+      if (!ownership || !bedrooms || !occupants || !bill || !postcode) {
+        document.getElementById('err-2').style.display = 'block';
+        return false;
+      }
+    }
+    if (step === 3) {
+      var products = getMultiSelected('products-interest');
+      var budget = getSelected('budget');
+      var timeline = document.getElementById('timeline').value;
+      if (products.length === 0 || !budget || !timeline) {
+        document.getElementById('err-3').style.display = 'block';
+        return false;
+      }
+    }
+    if (step === 4) {
+      var firstName = document.getElementById('first-name').value.trim();
+      var lastName = document.getElementById('last-name').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var phone = document.getElementById('phone').value.trim();
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      var phoneOk = phone.length >= 10;
+      if (!firstName || !lastName || !emailOk || !phoneOk) {
+        document.getElementById('err-4').style.display = 'block';
+        return false;
+      }
+    }
+    return true;
   }
 
   function nextStep(from) {
+    if (!validateStep(from)) return;
     if (from < totalSteps) showStep(from + 1);
   }
 
@@ -1704,10 +1878,11 @@
     if (from > 1) showStep(from - 1);
   }
 
+  // ─── OPTION SELECTION ───
   function selectOption(el, groupId) {
-    const group = document.getElementById(groupId);
+    var group = document.getElementById(groupId);
     if (group) {
-      group.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      group.querySelectorAll('.option-card').forEach(function(c) { c.classList.remove('selected'); });
     }
     el.classList.add('selected');
   }
@@ -1716,62 +1891,122 @@
     el.classList.toggle('selected');
   }
 
-  function checkTenant(el) {
-    // Show disqualification after a short delay if tenant selected
-    setTimeout(() => {
-      if (el.classList.contains('selected')) {
-        document.getElementById('form-body').style.display = 'none';
-        document.getElementById('form-disqualify').style.display = 'block';
-      }
-    }, 600);
+  // ─── TENANT HANDLING ───
+  function showTenantWarning(el) {
+    var warning = document.getElementById('tenant-warning');
+    if (el.classList.contains('selected')) {
+      warning.style.display = 'block';
+    } else {
+      warning.style.display = 'none';
+    }
   }
 
-  function submitForm() {
-    const consent1 = document.getElementById('consent-1').checked;
-    const consent3 = document.getElementById('consent-3').checked;
+  function resetTenantState() {
+    // Hide disqualify, show form body, go back to step 2
+    document.getElementById('form-disqualify').style.display = 'none';
+    document.getElementById('form-body').style.display = 'block';
+    document.getElementById('form-header').style.display = 'flex';
+    // Clear the ownership selection
+    var group = document.getElementById('ownership');
+    if (group) group.querySelectorAll('.option-card').forEach(function(c) { c.classList.remove('selected'); });
+    document.getElementById('tenant-warning').style.display = 'none';
+    showStep(2);
+  }
+
+  // ─── SUBMIT ENERGY FORM ───
+  function submitEnergyForm() {
+    var consent1 = document.getElementById('consent-1').checked;
+    var consent3 = document.getElementById('consent-3').checked;
     if (!consent1 || !consent3) {
-      alert('Please accept the required consent boxes to continue.');
+      document.getElementById('err-5').style.display = 'block';
       return;
     }
-    // Collect data (in production, POST to your Airtable/Supabase endpoint or Tally)
-    const leadData = {
+
+    var leadData = {
       propertyType: getSelected('prop-type'),
       ownership: getSelected('ownership'),
-      bedrooms: document.getElementById('bedrooms')?.value,
-      occupants: document.getElementById('occupants')?.value,
-      energyBill: document.getElementById('energy-bill')?.value,
-      postcode: document.getElementById('postcode')?.value,
+      bedrooms: document.getElementById('bedrooms').value,
+      occupants: document.getElementById('occupants').value,
+      energyBill: document.getElementById('energy-bill').value,
+      postcode: document.getElementById('postcode').value,
       products: getMultiSelected('products-interest'),
       budget: getSelected('budget'),
-      timeline: document.getElementById('timeline')?.value,
-      firstName: document.getElementById('first-name')?.value,
-      lastName: document.getElementById('last-name')?.value,
-      email: document.getElementById('email')?.value,
-      phone: document.getElementById('phone')?.value,
-      contactTime: document.getElementById('contact-time')?.value,
+      timeline: document.getElementById('timeline').value,
+      firstName: document.getElementById('first-name').value,
+      lastName: document.getElementById('last-name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      contactTime: document.getElementById('contact-time').value,
       marketingConsent: document.getElementById('consent-2').checked,
       timestamp: new Date().toISOString()
     };
-    console.log('Lead captured:', leadData);
-    // TODO: Replace with fetch() POST to your Airtable API / Make.com webhook / Tally embed
-    // fetch('YOUR_MAKE_COM_WEBHOOK_URL', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(leadData) });
+
+    console.log('Energy lead captured:', leadData);
+    // TODO: fetch('YOUR_MAKE_COM_WEBHOOK_URL', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(leadData) });
+
+    // Hide form, show success + construction upsell
     document.getElementById('form-body').style.display = 'none';
     document.getElementById('form-success').style.display = 'block';
     document.querySelector('.form-header .form-header-text h3').textContent = 'Assessment Submitted ✓';
     document.querySelector('.form-progress').style.display = 'none';
   }
 
+  // ─── CONSTRUCTION FORM ───
+  function showConstructionForm() {
+    document.getElementById('form-success').style.display = 'none';
+    document.getElementById('construction-form').style.display = 'block';
+    document.querySelector('.form-header .form-header-text h3').textContent = 'Home Improvement Assessment';
+    document.querySelector('#form-progress-text').textContent = 'Optional — Home Improvements';
+  }
+
+  function hideConstructionForm() {
+    document.getElementById('construction-form').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+    document.querySelector('.form-header .form-header-text h3').textContent = 'Assessment Submitted ✓';
+    document.querySelector('#form-progress-text').textContent = 'Energy assessment complete';
+  }
+
+  function submitConstructionForm() {
+    var services = getMultiSelected('construction-interest');
+    var budget = getSelected('construction-budget');
+    var timeline = document.getElementById('construction-timeline').value;
+
+    if (services.length === 0 || !budget || !timeline) {
+      document.getElementById('err-construction').style.display = 'block';
+      return;
+    }
+
+    var constructionData = {
+      services: services,
+      budget: budget,
+      timeline: timeline,
+      notes: document.getElementById('construction-notes').value,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log('Construction lead captured:', constructionData);
+    // TODO: fetch('YOUR_MAKE_COM_WEBHOOK_URL_CONSTRUCTION', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(constructionData) });
+
+    document.getElementById('construction-form').style.display = 'none';
+    document.getElementById('full-success').style.display = 'block';
+    document.querySelector('.form-header .form-header-text h3').textContent = 'All Done ✓';
+    document.querySelector('#form-progress-text').textContent = 'Both assessments submitted';
+  }
+
+  // ─── HELPERS ───
   function getSelected(groupId) {
-    const group = document.getElementById(groupId);
+    var group = document.getElementById(groupId);
     if (!group) return '';
-    const sel = group.querySelector('.option-card.selected');
+    var sel = group.querySelector('.option-card.selected');
     return sel ? sel.querySelector('.option-label').textContent : '';
   }
 
   function getMultiSelected(groupId) {
-    const group = document.getElementById(groupId);
+    var group = document.getElementById(groupId);
     if (!group) return [];
-    return [...group.querySelectorAll('.option-card.selected')].map(c => c.querySelector('.option-label').textContent);
+    return Array.from(group.querySelectorAll('.option-card.selected')).map(function(c) {
+      return c.querySelector('.option-label').textContent;
+    });
   }
 
   // ─── COOKIES ───
@@ -1792,16 +2027,16 @@
     document.getElementById('cookie-banner').classList.add('hidden');
   }
 
-  window.addEventListener('load', () => {
+  window.addEventListener('load', function() {
     if (safeStorage('get', 'ec_cookies')) {
       document.getElementById('cookie-banner').classList.add('hidden');
     }
   });
 
-  // ─── SMOOTH SCROLL OFFSET for fixed nav ───
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
+  // ─── SMOOTH SCROLL ───
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var target = document.querySelector(a.getAttribute('href'));
       if (target) {
         e.preventDefault();
         window.scrollTo({ top: target.offsetTop - 72, behavior: 'smooth' });
